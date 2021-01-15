@@ -1,13 +1,11 @@
-const users = [
-    {
-        id: 1,
-        name: 'Alexander'
-    },
-    {
-        id: 2,
-        name: 'Dashka'
-    }
-];
+const fs = require('fs');
+
+let users;
+
+fs.readFile('users.json', 'utf8', function (err, data) {
+    if (err) throw err;
+    users = JSON.parse(data);
+});
 
 class User {
     constructor(id, name) {
@@ -18,7 +16,9 @@ class User {
 
 class JSONUsersServices {
     addUser = (name) => {
-        users.push(new User(users.length + 1, name));
+        let user = new User(users.length + 1, name);
+        users.push(user);
+        this.writeFileJSON();
         return JSON.stringify(users);
     }
 
@@ -27,18 +27,34 @@ class JSONUsersServices {
     }
 
     deleteUser = id => {
-        users.splice(id - 1, 1);
-        users.forEach((item, index) => {
-            if(id - 1 === index) {
-                item.id = index + 1
-            }
-        })
+        if (this.searchUserIndex(id) !== -1) {
+            users.splice(this.searchUserIndex(id), 1);
+            users.forEach((item, index) => {
+                if (this.searchUserIndex(id) < index) {
+                    item.id = index + 1;
+                }
+            })
+
+            this.writeFileJSON();
+        }
+
         return JSON.stringify(users);
     }
 
     changeUser = (id, name) => {
-        users[id -1].name = name;
+        users[this.searchUserIndex(id)].name = name;
+        this.writeFileJSON();
         return JSON.stringify(users);
+    }
+
+    searchUserIndex = (id) => {
+        return users.findIndex(element => element.id === +id);
+    }
+
+    writeFileJSON()  {
+        fs.writeFile('users.json', JSON.stringify(users), (err) => {
+            console.log(err)
+        });
     }
 }
 
