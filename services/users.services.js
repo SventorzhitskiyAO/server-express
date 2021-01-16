@@ -16,7 +16,7 @@ class User {
 
 class JSONUsersServices {
     addUser = (name) => {
-        let user = new User(users.length + 1, name);
+        let user = new User(new Date().getTime(), name);
         users.push(user);
         this.writeFileJSON();
         return JSON.stringify(users);
@@ -27,14 +27,9 @@ class JSONUsersServices {
     }
 
     deleteUser = id => {
-        if (this.searchUserIndex(id) !== -1) {
-            users.splice(this.searchUserIndex(id), 1);
-            users.forEach((item, index) => {
-                if (this.searchUserIndex(id) < index) {
-                    item.id = index + 1;
-                }
-            })
-
+        let userIndex = this.searchUserIndex(id);
+        if (userIndex !== -1) {
+            users.splice(userIndex, 1);
             this.writeFileJSON();
         }
 
