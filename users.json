@@ -1,1 +1,16 @@
-[{"id":1610791137648,"name":"Sasha"},{"id":1610791179696,"name":"Dasha"},{"id":1610791194726,"name":"Timofey"},{"id":1610791203344,"name":"Lesha"}]
+[
+  {
+    "id": 1610908023857,
+    "name": "Sasha",
+    "role": "admin",
+    "login": "absolute-zero12",
+    "password": "$2b$10$0w6YoUrR5X1qXmFABma0pewVK0fvcTWh1zljHtO84eqEuWNaHdDPK"
+  },
+  {
+    "id": 1610953458588,
+    "name": "Daska",
+    "role": "user",
+    "login": "mara",
+    "password": "$2b$10$atfWfKMPHrFxb6O6vaPMLeLao0Z4mzOkAD5iyGtp7HcRxHU0IhMua"
+  }
+]
