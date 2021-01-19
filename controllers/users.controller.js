@@ -24,7 +24,7 @@ class UsersController {
     change = (req, res) => {
         res
             .status(200)
-            .send(this.services.changeUser(req.params.id, req.body.name))
+            .send(this.services.changeUser(req.params.id, req.body))
     }
 }
 

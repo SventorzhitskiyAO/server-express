@@ -1,27 +1,21 @@
 const fs = require("fs");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
+const usersServices = require('../services/users.services');
 
-let users;
-
-fs.readFile('users.json', 'utf8', function (err, data) {
-    if (err) throw err;
-    users = JSON.parse(data);
-});
+let users = usersServices.readFile();
 
 class AuthServices {
+    services = usersServices
+
     signIn = (login, password) => {
-        const user = users[this.searchUserLogin(login)];
+        const user = users[services.searchUserLogin(login)];
 
         if (bcrypt.compareSync(password, user.password)) {
             user.token = jwt.sign(user.login.toString(), 'secret');
 
             return user;
         }
-    }
-
-    searchUserLogin = (login) => {
-        return users.findIndex(element => element.login === login);
     }
 }
 
