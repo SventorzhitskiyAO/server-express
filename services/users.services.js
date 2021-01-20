@@ -1,10 +1,9 @@
-const fs = require('fs');
+const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken')
+const Schema = mongoose.Schema;
 
-class User {
-    constructor(id, name, login, password) {
-        this.id = id;
+class UserNew {
+    constructor(name, login, password) {
         this.name = name;
         this.role = 'user';
         this.login = login;
@@ -12,75 +11,77 @@ class User {
     }
 }
 
+const userScheme = new Schema(
+    {
+        name: String,
+        role: String,
+        login: String,
+        password: String
+    }
+    , {versionKey: false});
+
+const User = mongoose.model("User", userScheme);
+
+// User.createUser(
+//     {
+//         name: "qwerty",
+//         role: "admin",
+//         login: "admin",
+//         password: bcrypt.hashSync("admin", bcrypt.genSaltSync(10))
+//     }
+// )
+
+mongoose.connect("mongodb://localhost:27017/", {useNewUrlParser: true}, function (err) {
+    if (err) return console.log(err);
+});
+
 class JSONUsersServices {
-    readFile = () => {
-        return  JSON.parse(fs.readFileSync('users.json', 'utf8'));
-    }
-
-    users = this.readFile()
-
     addUser = ({name, login, password}) => {
-        if (this.searchUserLogin(login) !== -1) return 'Choose another login';
+        const user = new User(new UserNew(name, login, this.createHashPassword(password)));
 
-        let user = new User(new Date().getTime(), name, login, this.createHashPassword(password));
-        this.users.push(user);
-        this.writeFileJSON();
-        return JSON.stringify(this.users);
+        user.save((err) => {
+            if (err) return console.log(err);
+        });
 
+        return user;
     }
 
-    getAllUsers = () => {
-        return JSON.stringify(this.users);
+    getAllUsers = async () => {
+        return (await User.find({}, (err) => {
+            if (err) return console.log(err);
+        }))
     }
 
-    deleteUser = id => {
-        let userIndex = this.searchUserIndex(id);
-        if (userIndex !== -1) {
-            this.users.splice(userIndex, 1);
-            this.writeFileJSON();
-        }
-
-        return JSON.stringify(this.users);
+    deleteUser = async id => {
+        return (await User.findByIdAndDelete(id, function (err) {
+            if (err) return console.log(err);
+        }));
     }
 
     changeUser = (id, body) => {
-        const userIndex = this.searchUserIndex(id);
+        const userChangeProp = {};
 
-        if (body.hasOwnProperty('login')) this.users[userIndex].login = body.login;
-        if (body.hasOwnProperty('password')) this.users[userIndex].password = this.createHashPassword(body.password);
-        if (body.hasOwnProperty('name')) this.users[userIndex].name = body.name;
+        if (body.hasOwnProperty('login')) userChangeProp.login = body.login;
+        if (body.hasOwnProperty('password')) userChangeProp.password = this.createHashPassword(body.password);
+        if (body.hasOwnProperty('name')) userChangeProp.name = body.name;
 
-        this.writeFileJSON();
-        return JSON.stringify(this.users);
+        User.findOneAndUpdate({_id: id}, {$set: {userChangeProp}}, {new: true}, function (err) {
+            if (err) return console.log(err);
+        });
     }
 
-    getUserByLoginAndPassword = (login, password) => {
-        let index =  this.searchUserLogin(login);
-
-        if (index === -1) return 'not correct login or password';
-        if (this.createHashPassword(password) === this.users[index].password) return this.users[index];
-
-        return 'not correct login or password';
+    searchUserIndex = async (id) => {
+       return (await User.findById(id, err => console.log(err)));
     }
 
-    searchUserIndex = (id) => {
-        return this.users.findIndex(element => element.id === +id);
-    }
-
-    searchUserLogin = (login) => {
-        return this.users.findIndex(element => element.login === login);
+    searchUserLogin = async (login) => {
+        return (await User.findOne({'login': login}, err => console.log(err)));
     }
 
     createHashPassword = (passwordFromUser) => {
         let salt = bcrypt.genSaltSync(10);
 
         return bcrypt.hashSync(passwordFromUser, salt);
-    }
-
-    writeFileJSON()  {
-        fs.writeFile('users.json', JSON.stringify(this.users), (err) => {
-            if (err) throw err;
-        });
     }
 }
 

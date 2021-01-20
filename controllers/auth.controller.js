@@ -3,10 +3,10 @@ const authServices = require('../services/auth.services')
 class AuthController {
     auth = authServices
 
-    signIn = (req, res) => {
+    signIn = async (req, res) => {
         res
             .status(200)
-            .send(this.auth.signIn(req.body.login, req.body.password))
+            .send(await this.auth.signIn(req.body.login, req.body.password))
     }
 }
 
