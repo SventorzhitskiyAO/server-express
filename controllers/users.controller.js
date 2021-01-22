@@ -7,7 +7,6 @@ class UsersController {
         res.status(200);
         this.services.getAllUsers()
             .then(result => res.send(result))
-            .catch(err => res.status(500).send(err))
     }
 
     add = (req, res) => {
@@ -20,13 +19,13 @@ class UsersController {
         res.status(200);
         this.services.deleteUser(req.params.id)
             .then(result => res.send(result))
-            .catch(err => res.status(500).send(err))
     }
 
-    change = (req, res) => {
+    change = async (req, res) => {
         res
             .status(200)
-            .send(this.services.changeUser(req.params.id, req.body))
+            .send( await this.services.changeUser(req.params.id, req.body))
+
     }
 }
 
