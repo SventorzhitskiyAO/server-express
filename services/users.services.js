@@ -15,7 +15,6 @@ class JSONUsersServices {
     userModel = mongoose.model('User');
 
     addUser = ({...u}) => {
-
         const user = new this.userModel(new UserNew(u.name, u.login, u.password));
 
         user.save();
@@ -32,27 +31,15 @@ class JSONUsersServices {
     }
 
     changeUser = async (id, body) => {
-        const userChangeProp = {};
-
-        if (body.hasOwnProperty('login')) userChangeProp.login = body.login;
-        if (body.hasOwnProperty('password')) userChangeProp.password = body.password;
-        if (body.hasOwnProperty('name')) userChangeProp.name = body.name;
-
-        return this.userModel.findOneAndUpdate({_id: id}, {$set: {...userChangeProp}}, {new: true});
+        return this.userModel.findOneAndUpdate({_id: id}, {$set: {...body}}, {new: true});
     }
 
     searchUserIndex = async (id) => {
        return this.userModel.findById(id);
     }
 
-    searchUserLogin = async (login) => {
-        return this.userModel.findOne({'login': login});
-    }
-
-    createHashPassword = (passwordFromUser) => {
-        const salt = bcrypt.genSaltSync(10);
-
-        return bcrypt.hashSync(passwordFromUser, salt);
+    searchUserLogin = (login) => {
+        return this.userModel.findOne({login: "AbsoluteZero"})
     }
 }
 

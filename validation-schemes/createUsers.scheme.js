@@ -16,9 +16,7 @@ const createUsersSchema = Joi.object({
     password: Joi.string()
         .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
 
-    repeat_password: Joi.ref('password'),
+    repeat_password: Joi.ref('password')
 })
-    .with('login', 'password')
-    .with('password', 'repeat_password');
 
 module.exports = createUsersSchema;
