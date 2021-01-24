@@ -1,15 +1,29 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const Sequelize = require("sequelize");
+const sequelize = require('../services/dbConnect')
 
-userScheme = new mongoose.Schema({
-    name: String,
-    role: String,
-    login: String,
+const User = sequelize.define("user", {
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false
+    },
+    name: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    role: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    login: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     password: {
-        type: String,
-        set: value => bcrypt.hashSync(value, bcrypt.genSaltSync(10))
+        type: Sequelize.STRING,
+        allowNull: false
     }
-}, {versionKey: false});
+});
 
-mongoose.model("User", userScheme);
-
+module.exports = User;

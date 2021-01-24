@@ -1,5 +1,4 @@
 const Joi = require('joi');
-
 const createUsersSchema = Joi.object({
     login: Joi.string()
         .alphanum()

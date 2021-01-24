@@ -12,7 +12,7 @@ class UsersController {
     add = (req, res) => {
         res
             .status(200)
-            .send(this.services.addUser(req.body))
+            .send( this.services.addUser(req.body))
     }
 
     delete = (req, res) => {
