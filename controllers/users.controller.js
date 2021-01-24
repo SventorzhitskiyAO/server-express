@@ -16,9 +16,9 @@ class UsersController {
     }
 
     delete = (req, res) => {
-        res.status(200);
-        this.services.deleteUser(req.params.id)
-            .then(result => res.send(result))
+        res
+            .status(200)
+            .send(this.services.deleteUser(req.params.id))
     }
 
     change = async (req, res) => {

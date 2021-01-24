@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const fs = require("fs");
 const usersServices = require('../services/users.services');
 
 const services = usersServices;
@@ -10,7 +9,6 @@ const auth = (role) => async (req, res, next) => {
         req.login = jwt.verify(token, 'secret');
 
         const user = await services.searchUserLogin(req.login);
-        console.log(user.role)
 
         if (user.role !== role) res.status(403).send('Forbidden');
         next();

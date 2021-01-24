@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const User = require('./models/users.model');
+// const User = require('./models/users.model');
 const usersRouter = require('./routes/users.routes');
 const authRouter = require('./routes/auth.routes');
 const sequelize = require("./services/dbConnect")

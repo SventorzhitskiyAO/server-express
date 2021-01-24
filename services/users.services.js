@@ -1,23 +1,20 @@
 const Users = require('../models/users.model')
-const bcrypt = require("bcrypt");
 
 class JSONUsersServices {
     addUser = async ({...u}) => {
-        console.log(u)
-       const user = Users.create({
+       return  Users.create({
             name: u.name,
             role: 'admin',
             login: u.login,
             password: u.password
        });
-       return user;
     }
 
     getAllUsers = async () => {
-        return Users.findAll({raw: true });
+        return Users.findAll({raw: false });
     }
 
-    deleteUser = async id => {
+    deleteUser = id => {
         return Users.destroy({where: {id: id}});
     }
 
@@ -25,8 +22,8 @@ class JSONUsersServices {
         return Users.update({...body}, {where: {id: id} })
     }
 
-    searchUserIndex = async (id) => {
-        return Users.findAll({where: {id: id}, raw: true});
+    searchUserLogin = async (login) => {
+        return Users.findOne({where: {login: login}, raw: true});
     }
 }
 
