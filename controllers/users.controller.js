@@ -1,4 +1,5 @@
-const usersServices = require('../services/users.services')
+const usersServices = require('../services/users.services');
+const path = require('path');
 
 class UsersController {
     services = usersServices;
@@ -7,6 +8,14 @@ class UsersController {
         res.status(200);
         this.services.getAllUsers()
             .then(result => res.send(result))
+    }
+
+    getImg = async (req, res) => {
+        const userImg = await this.services.searchUserIndex(req.params.id);
+        res
+            .status(200)
+            .header({'Content-Type': 'image/jpeg'} )
+            .sendFile(path.dirname(__dirname) + '/' + userImg.img.path)
     }
 
     add = (req, res) => {
@@ -26,6 +35,12 @@ class UsersController {
             .status(200)
             .send( await this.services.changeUser(req.params.id, req.body))
 
+    }
+
+    addImg = async (req, res) => {
+        res
+            .status(200)
+            .send(await  this.services.addImg(req.params.id, req.file))
     }
 }
 
