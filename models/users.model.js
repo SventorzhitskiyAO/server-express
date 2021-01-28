@@ -22,4 +22,3 @@ userScheme = new mongoose.Schema({
 }, {versionKey: false});
 
 mongoose.model("User", userScheme);
-

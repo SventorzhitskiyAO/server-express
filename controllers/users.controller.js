@@ -38,6 +38,8 @@ class UsersController {
     }
 
     addImg = async (req, res) => {
+
+        console.log(req.file, 123)
         res
             .status(200)
             .send(await  this.services.addImg(req.params.id, req.file))
